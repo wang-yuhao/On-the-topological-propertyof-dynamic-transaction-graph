@@ -21,7 +21,7 @@
 ![image](./paper_result/experiment_rmse/models_w5_rmse.jpg)
 ![image](./paper_result/experiment_rmse/models_w7_rmse.jpg)
 
-[Source File](./paper_result/experiment_rmse/experiment_rmse/MSE_of_models.ipynb)
+[Source File](./paper_result/experiment_rmse/MSE_of_models.ipynb)
 
 ## 3. 
     3.1 Random Forest Performance.
