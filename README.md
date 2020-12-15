@@ -17,27 +17,45 @@
 
 ## 2. RMSE of sliding window based predictions of 2017 Bitcoin prices in different window and horizon values.
 
-![image](./paper_result/experiment_rmse/models_w3_rmse.jpg)
-![image](./paper_result/experiment_rmse/models_w5_rmse.jpg)
-![image](./paper_result/experiment_rmse/models_w7_rmse.jpg)
+Models: RF, ENET, GP, XGBT
 
-[Source File](./paper_result/experiment_rmse/experiment_rmse/MSE_of_models.ipynb)
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_4.png)
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_4.png)
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_4.png)
 
-## 3. 
+Models: RF, ENET, GP, XGBT, ARIMAX
+
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_5.png)
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_5.png)
+![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_5.png)
+
+[Source File](./paper_result/experiment_rmse/rmse_models.py)
+
+## 3. [Source File](./paper_result/models_performance/models_performance.py)
+
     3.1 Random Forest Performance.
-![image](./paper_result/experiment_models_performance/rf_w3_perf.jpg)
-![image](./paper_result/experiment_models_performance/rf_w5_perf.jpg)
-![image](./paper_result/experiment_models_performance/rf_w7_perf.jpg)
 
-[Source File](./paper_result/experiment_models_performance/Random_Forest_Performance.ipynb)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_3.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_5.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_7.png)
 
     3.2 Elastic Net model performance.
 
-![image](./paper_result/experiment_models_performance/enet_w3_perf.jpg)
-![image](./paper_result/experiment_models_performance/enet_w5_perf.jpg)
-![image](./paper_result/experiment_models_performance/enet_w7_perf.jpg)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_3.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_5.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_7.png)
+    
+    3.3 GP performance:
 
-[Source File](./paper_result/experiment_models_performance/ENET_Performance.ipynb)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_3.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_5.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_7.png)
+
+    3.4 XGBT performance:
+
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_3.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_5.png)
+![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_7.png)
 
 
 
