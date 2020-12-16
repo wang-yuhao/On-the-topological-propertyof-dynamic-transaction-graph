@@ -19,15 +19,33 @@
 
 Models: RF, ENET, GP, XGBT
 
+<b>window_size = 3</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_4.png)
+
+<b>window_size = 5</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_4.png)
+
+<b>window_size = 7</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_4.png)
+
 
 Models: RF, ENET, GP, XGBT, ARIMAX
 
+<b>window_size = 3</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_5.png)
+
+<b>window_size = 5</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_5.png)
+
+<b>window_size = 7</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_5.png)
+
 
 [Source File](./paper_result/experiment_rmse/rmse_models.py)
 
