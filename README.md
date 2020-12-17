@@ -19,42 +19,60 @@
 
 Models: RF, ENET, GP, XGBT
 
+<b>window_size = 3</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_4.png)
+
+<b>window_size = 5</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_4.png)
+
+<b>window_size = 7</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_4.png)
+
 
 Models: RF, ENET, GP, XGBT, ARIMAX
 
+<b>window_size = 3</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_3_5.png)
+
+<b>window_size = 5</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_5_5.png)
+
+<b>window_size = 7</b>
+
 ![image](./paper_result/experiment_rmse/version_12_14_09_10/WINDOW_7_5.png)
+
 
 [Source File](./paper_result/experiment_rmse/rmse_models.py)
 
-## 3. [Source File](./paper_result/models_performance/models_performance.py)
+## 3. [Source File](./paper_result/models_performance/models_performance_without_normlization.py)
 
     3.1 Random Forest Performance.
 
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_3.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_5.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/rf_window_7.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/rf_window_3.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/rf_window_5.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/rf_window_7.png)
 
     3.2 Elastic Net model performance.
 
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_3.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_5.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/enet_window_7.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/enet_window_3.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/enet_window_5.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/enet_window_7.png)
     
     3.3 GP performance:
 
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_3.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_5.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/gp_window_7.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/gp_window_3.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/gp_window_5.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/gp_window_7.png)
 
     3.4 XGBT performance:
 
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_3.png)
-![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_5.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/xgbt_window_3.png)
+![image](./paper_result/models_performance/performance/performance_with_pca/xgbt_window_5.png)
 ![image](./paper_result/models_performance/performance/performance_fixed_parameter/xgbt_window_7.png)
 
 
