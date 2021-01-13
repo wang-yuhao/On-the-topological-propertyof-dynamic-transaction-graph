@@ -6,7 +6,7 @@
 
 1.2 Set the parameter:  **DATA_DIR_PATH** and **OCC_MATRIX_SIZE**.
 
-1.3 Occ Matrix will generate in the directory:  **DATA_DIR_PATH + "processed_data/2016/"**.
+1.3 Occ Matrix will be generated in the following directory:  **DATA_DIR_PATH + "processed_data/2016/"**.
    
 [Source File](./reimplement/python/gen_chainlet.py)
 
