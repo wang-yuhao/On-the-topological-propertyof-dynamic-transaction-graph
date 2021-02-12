@@ -17,20 +17,20 @@ Models: RF, ENET, GP, XGBT
 
 [Source File](./best_performance/best_performance.py)
 
-<b>window_size = 3</b>
+<b>window_size = 3: </b>
 
 ![image](./best_performance/result_image/base_rmse_window_3_line.png)
 
-<b>window_size = 5</b>
+<b>window_size = 5: </b>
 
 ![image](./best_performance/result_image/base_rmse_window_5_line.png)
 
-<b>window_size = 7</b>
+<b>window_size = 7: </b>
 
 ![image](./best_performance/result_image/base_rmse_window_7_line.png)
 
 
-Models: RF, ENET, GP, XGBT, ARIMAX (last version)
+<!-- Models: RF, ENET, GP, XGBT, ARIMAX (last version)
 
 [Source File](./experiment_rmse/rmse_models.py)
 
@@ -44,7 +44,7 @@ Models: RF, ENET, GP, XGBT, ARIMAX (last version)
 
 <b>window_size = 7</b>
 
-![image](./experiment_rmse/version_12_14_09_10/WINDOW_7_5.png)
+![image](./experiment_rmse/version_12_14_09_10/WINDOW_7_5.png) -->
 
 
 

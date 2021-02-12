@@ -213,7 +213,7 @@ def rf_mode(train_input, train_target, test_input, test_target):
 
 def gp_mode(train_input, train_target, test_input, test_target):
     param = {
-        'kernel': RationalQuadratic(alpha=0.01, length_scale=1),
+        'kernel': DotProduct() + WhiteKernel(),
         'n_restarts_optimizer': 2
         }
 

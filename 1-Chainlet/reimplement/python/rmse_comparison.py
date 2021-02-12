@@ -31,7 +31,7 @@ PRICED_BITCOIN_FILE_PATH = "C:/Users/wang.yuhao/Documents/ChainNet/data/original
 betti0_input_path = "C:/Users/wang.yuhao/Documents/ChainNet/data/original_data/betti_0(100).csv"
 betti1_input_path = "C:/Users/wang.yuhao/Documents/ChainNet/data/original_data/betti_1(100).csv"
 DAILY_FILTERED_OCCURRENCE_FILE_PATH = "C:/Users/wang.yuhao/Documents/ChainNet/data/original_data/filteredDailyOccMatrices/"
-DAILY_OCCURRENCE_FILE_PATH = "dailyOccmatrices/"
+DAILY_OCCURRENCE_FILE_PATH = "C:/Users/wang.yuhao/Documents/CoinWorks-master/data/dailyVrAmoMatrices/dailyOccmatrices/"
 
 
 ROW = -1
@@ -42,8 +42,8 @@ TEST_SPLIT = 0.01
 ALL_YEAR_INPUT_ALLOWED = False
 
 SLIDING_BATCH_SIZE = 200
-TEST_LENGTH = 330
-YEAR = 2016
+TEST_LENGTH = 100
+YEAR = 2017
 
 
 from sklearn.metrics import mean_squared_error
@@ -234,6 +234,7 @@ def rf_mode(train_input, train_target, test_input, test_target):
     rf_regression = RandomForestRegressor(**param)
     rf_regression.fit(train_input, train_target.ravel() )
     rf_predicted = rf_regression.predict(test_input)
+
     return rf_predicted
 
 def filter_data(priced_bitcoin):
@@ -284,6 +285,7 @@ def preprocess_data(dataset_model, window_size, prediction_horizon, is_price_of_
     return daily_occurrence_input
 
     
+   
 def initialize_setting( features, price, day, test_start, dataset_model, window_size, prediction_horizon, is_price_of_previous_days_allowed, aggregation_of_previous_days_allowed):
     train_target = price[test_start : test_start + 200]
     train_days = day[test_start : test_start + 200]
@@ -296,6 +298,7 @@ def initialize_setting( features, price, day, test_start, dataset_model, window_
     return train_input, train_target, test_input, test_target, train_days, test_days
 
 def run_print_model(train_input, train_target, test_input, test_target, train_days, test_days):
+
     rf_prediction = rf_mode(train_input, train_target, test_input, test_target)
     xgbt_prediction = xgbt_mode(train_input, train_target, test_input, test_target)
     gp_prediction = gp_mode(train_input, train_target, test_input, test_target)
@@ -304,24 +307,38 @@ def run_print_model(train_input, train_target, test_input, test_target, train_da
     return rf_prediction, xgbt_prediction, gp_prediction, enet_prediction
 
 def rmse_comparison(rmse_path):
-    priced_bitcoin = pd.read_csv(PRICED_BITCOIN_FILE_PATH, sep=",")
-    observed = priced_bitcoin[priced_bitcoin["year"]==2016]["price"].reset_index(drop=True)[1:330]
-    rmse_M0 = pd.read_csv(rmse_path + "rmse_baseline_total.csv", sep=",", header=0, index_col=0).sum(axis=1)
-    rmse_M1 = pd.read_csv(rmse_path + "rmse_model_1_total.csv", sep=",", header=0, index_col=0).sum(axis=1)
-    rmse_M3 = pd.read_csv(rmse_path + "rmse_model_3_total.csv", sep=",", header=0, index_col=0).sum(axis=1)
-    rmse_M4 = pd.read_csv(rmse_path + "rmse_model_4_total.csv", sep=",", header=0, index_col=0).sum(axis=1)
-    rmse_M5 = pd.read_csv(rmse_path + "rmse_model_5_total.csv", sep=",", header=0, index_col=0).sum(axis=1)
-    
+    rmse_baseline = pd.read_csv(rmse_path + "rmse_baseline_total.csv", sep=",", index_col=0)
+    rmse_model_1 = pd.read_csv(rmse_path + "rmse_model_1_total.csv", sep=",", index_col=0)
+    rmse_model_2 = pd.read_csv(rmse_path + "rmse_model_2_total.csv", sep=",", index_col=0)
+    rmse_model_3 = pd.read_csv(rmse_path + "rmse_model_3_total.csv", sep=",", index_col=0)
+    rmse_model_4 = pd.read_csv(rmse_path + "rmse_model_4_total.csv", sep=",", index_col=0)
+    rmse_model_5 = pd.read_csv(rmse_path + "rmse_model_5_total.csv", sep=",", index_col=0)
 
-    rmse_comparison_1 = ( 1 - rmse_M1.div(rmse_M0)) * 100
-    rmse_comparison_3 = ( 1 - rmse_M3.div(rmse_M0)) * 100
-    rmse_comparison_4 = ( 1 - rmse_M4.div(rmse_M0)) * 100
-    rmse_comparison_5 = ( 1 - rmse_M5.div(rmse_M0)) * 100
+    rmse_baseline_arr = []
+    rmse_model_1_arr = []
+    rmse_model_2_arr = []
+    rmse_model_3_arr = []
+    rmse_model_4_arr = []
+    rmse_model_5_arr = []
 
-    #rmse_comparison_1.plot(figsize=(15,8))
-    rmse_comparison_total = pd.concat([rmse_comparison_1, rmse_comparison_3,rmse_comparison_4, rmse_comparison_5], axis=1)
-    rmse_comparison_total.columns = ["Model 1", "Model 3", "Model 4", "Model 5"]
-    rmse_comparison_total.plot(figsize=(10,6))
+    for i in range(9):
+        print(rmse_model_1.iloc[i,i])
+        rmse_model_1_arr.append(-(rmse_model_1.iloc[i,i]-rmse_baseline.iloc[i,i])/rmse_baseline.iloc[i,i]*100)
+        rmse_model_2_arr.append(-(rmse_model_2.iloc[i,i]-rmse_baseline.iloc[i,i])/rmse_baseline.iloc[i,i]*100)
+        rmse_model_3_arr.append(-(rmse_model_3.iloc[i,i]-rmse_baseline.iloc[i,i])/rmse_baseline.iloc[i,i]*100)
+        rmse_model_4_arr.append(-(rmse_model_4.iloc[i,i]-rmse_baseline.iloc[i,i])/rmse_baseline.iloc[i,i]*100)
+        rmse_model_5_arr.append(-(rmse_model_5.iloc[i,i]-rmse_baseline.iloc[i,i])/rmse_baseline.iloc[i,i]*100)
+
+    rmse_models = np.vstack([rmse_model_1_arr, rmse_model_2_arr, rmse_model_3_arr, rmse_model_4_arr, rmse_model_5_arr])
+    rmse_models_df = pd.DataFrame(rmse_models.T, columns = ['model 1' , 'model 2', 'model 3', 'model 4', 'model 5'], index=[1,2,5,7,10,15,20,25,30]) 
+
+    pred_fig = rmse_models_df.plot(figsize=(10,6),title="% Change (decrease) in RMSE compared to the baseline model.")
+    pred_fig.set_xlabel("Prediction horizon (h)")
+    pred_fig.set_ylabel("% Decrease in RMSE, compared to Baseline model")
+    pred_fig.set_yticks([0,5,10,15,20])
+    pred_fig.set_ylim(-5,25)
+    pred_fig.figure.savefig(pred_path + "rmse_comparison_total_fig.png")
+
 
 def plot_horizon(pred_path, horizon_size):
     priced_bitcoin = pd.read_csv(PRICED_BITCOIN_FILE_PATH, sep=",")
@@ -352,7 +369,7 @@ for step in parameter_dict:
     start_time = time.time()
     t = datetime.datetime.now()
     dir_name = t.strftime('%m_%d___%H_%M')
-    drive_path = "drive/MyDrive/Colab Notebooks/ChainNet/processed_data/"+dir_name
+    drive_path = "chainlet_processed_data/"+dir_name
     if not os.path.exists(dir_name):
         os.makedirs(drive_path)
         print("drive_path: ", drive_path)
@@ -366,8 +383,8 @@ for step in parameter_dict:
     print("IS_PRICE_OF_PREVIOUS_DAYS_ALLOWED: ", is_price_of_previous_days_allowed)
     print("AGGREGATION_OF_PREVIOUS_DAYS_ALLOWED: ", aggregation_of_previous_days_allowed)
     window_size_array = [3]
-    horizon_size_array = list(range(1,31))
-    dataset_model_array = ["baseline","model_1","model_2","model_3", "model_4", "model_5"]
+    horizon_size_array = [1, 2, 5, 7, 10, 15, 20, 25, 30]
+    dataset_model_array = ["baseline","model_1","model_2", "model_3","model_4","model_5"]
     for dataset_model in dataset_model_array:
         print('dataset_model: ', dataset_model)
 
@@ -382,7 +399,6 @@ for step in parameter_dict:
                     train_input, train_target, test_input, test_target, train_days, test_days = initialize_setting( features, price, day, test_start, dataset_model, window_size, prediction_horizon, is_price_of_previous_days_allowed, aggregation_of_previous_days_allowed)
                     rf_prediction = rf_mode(train_input, train_target, test_input, test_target)[0]
 
-
                     prediction = pd.DataFrame({'rf_' + dataset_model + '_prediction_'+str(prediction_horizon): [rf_prediction]})
                     test_target_df = pd.DataFrame({'test_target': [test_target]})
 
@@ -396,6 +412,8 @@ for step in parameter_dict:
                         test_target_total = pd.concat(test_target_total)
 
                 print("+++"*10)
+                print("prediction_total:",prediction_total)
+                print("test_target_total:",test_target_total)
                 rmse = ((((prediction_total.sub(test_target_total.values))**2).mean())**0.5).to_frame().T
                 print("rmse: ",rmse)
 
@@ -420,6 +438,6 @@ for step in parameter_dict:
         print("\n")
     
     rmse_comparison(result_path) 
-    horizon_size_arr = [1, 5, 10, 20]
-    for horizon_size in horizon_size_arr:
-            plot_horizon(result_path, horizon_size)
+    # horizon_size_arr = [1, 5, 10, 20]
+    # for horizon_size in horizon_size_arr:
+    #         plot_horizon(result_path, horizon_size)
