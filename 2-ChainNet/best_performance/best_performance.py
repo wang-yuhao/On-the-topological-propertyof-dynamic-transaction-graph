@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error
 import math
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ConstantKernel, RBF
+from sklearn.gaussian_process.kernels import DotProduct, WhiteKernel
 from sklearn.gaussian_process.kernels import RationalQuadratic
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RepeatedKFold
