@@ -59,5 +59,11 @@ bitcoin_blockchain_2020
       |--amo2020366.csv
 |--2020_betti_0.csv	# 2020 betti number: betti_0
 |--2020_betti_1.csv	# 2020 betti number: betti_1
-|--pricedBitcoin2020.csv	# 2020 bitcoin price : betti_0
 ```
+
+Bitcoin Blockchain source: [BLOCKCHAIN](https://www.blockchain.com/api/blockchain_api)
+Bitcoin price sources: [BLOCKCHAIN](https://www.blockchain.com/charts/market-price)
+Bitcoin transaction: Obtained by merging amoData. 
+Bitcoin transaction(secondary source): https://www.blockchain.com/charts/n-transactions.
+ 
+

@@ -42,6 +42,7 @@ This command will build the following folder structure:
       |--...
 ```
 
-Ethereum Blockchain source: [Infura](https://infura.io/)
-
-Tool: [Web3 API](https://web3py.readthedocs.io/en/stable/)
+Ethereum Blockchain source 	   : [Infura](https://infura.io/)
+Ethereum daily price source	   : [Ethereumscan](https://etherscan.io/chart/etherprice)
+Ethereum daily transaction source  : [Ethereumscan](https://etherscan.io/chart/tx)
+Tool                       	   : [Web3 API](https://web3py.readthedocs.io/en/stable/)
