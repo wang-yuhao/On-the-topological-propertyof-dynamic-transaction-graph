@@ -1,4 +1,4 @@
-# Read the bitcoin blockchain data and extract their topological properties
+# Read the ethereum blockchain data and extract their topological properties
 # Modify on 12.04.2021
 
 from web3 import Web3 
@@ -21,14 +21,45 @@ OCCMAT_DIR = 'occMat/'
 PERMAT_DIR = 'perMat/'
 BETTI_DIR = 'betti/'
 BETTI_0_DIR = 'betti/betti_0/'
-BETTI_1_DIR = 'betti_1/'
+BETTI_1_DIR = 'betti/betti_1/'
 
 last_day = 0
-start_block_number = 12160000
-end_block_number = 4200000
-step_len = -20000
+step_block = 95000
+start_block_number = 10427000
+end_block_number   = start_block_number - step_block * 3
+step_len = -1000
 
-web3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/c338d8247a504efd85a1e8a8738bfaa7"))
+
+web3_key1 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/c338d8247a504efd85a1e8a8738bfaa7")) # yuhao2804@gmail.com 
+web3_key2 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/504bf3b648ee4afa9b8ef68e82d0d5b5")) # wang.yuhao@campus.lmu.de 
+web3_key3 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/f9c1de855f1c43f0bcecd0fb574e8a9e")) # wangyuhaodeutsch@gmail.com 
+web3_key4 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/a45e22291e964900b8caad9a15d01cad")) # yuhao199410@gmail.com
+web3_key5 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/1cacc4f441a24306bb97e2b2a29f46bc")) # wyh04280030@gmail.com
+web3_key6 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/329fb49ff23b433794539e4b76150529")) # wangyuh@cip.ifi.lmu.de
+web3_key7 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/a8a91c9b51c249ad9356b13b742ba8e0")) # 310835246@qq.com
+web3_key8 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/69742f661e374708b0bd92b8d135f724")) # 2677261148@qq.com
+web3_key9 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/4bb577eede1e44efa7357325f57749c1")) # wyh940510@gmail.com
+web3_key10 = Web3(Web3.HTTPProvider("https://mainnet.infura.io/v3/14abaf422f2649989c72f561aef24046")) # wyh04280030@qq.com
+
+# Create a directory if it does not exist
+blocks_record_path = "blocks_record.csv"
+
+YEARS = ['2021','2020','2019','2018','2017']
+for YEAR in YEARS:
+    amoData_Year_dir = AMODATA_DIR + YEAR + "/"
+    amoMat_Year_dir = AMOMAT_DIR + YEAR + "/"
+    occMat_Year_dir = OCCMAT_DIR + YEAR + "/"
+    perMat_Year_dir = PERMAT_DIR + YEAR + "/"
+    betti_Year_dir = BETTI_DIR + YEAR + "/"
+    betti_0_Year_dir = BETTI_0_DIR + YEAR + "/"
+    betti_1_Year_dir = BETTI_1_DIR + YEAR + "/"
+    
+    check_dir_list = [amoData_Year_dir, amoMat_Year_dir, occMat_Year_dir, perMat_Year_dir,betti_Year_dir, betti_0_Year_dir, betti_1_Year_dir]
+    for dir_name in check_dir_list:
+        if not os.path.exists(dir_name):
+            print("Create "+dir_name)
+            os.makedirs(dir_name)
+
 
 def getBetweenDay(begin_date, end_date):
     date_list = []
@@ -128,191 +159,150 @@ def getYearsFromDate(begin_date, end_date):
     YEARS = [str(i) for i in range(int(begin_Year), int(end_Year) + 1)]
     return YEARS 
 
-def handelETHBlock(blockNumber,return_dict):
-    block = web3.eth.getBlock(blockNumber, True)
-    block_date_unix = block.timestamp
-    block_date = datetime.datetime.utcfromtimestamp(block_date_unix).strftime('%Y-%m-%d')
-    txs = block.transactions
+def save_to_file(callback_arg):
+        (block_data_dict, blockNumber) = callback_arg
+        tx_list = block_data_dict.values()
+        #print("block_data_dict:",block_data_dict)
+        print("save_to_file:",blockNumber)
+        tx_df = pd.DataFrame(tx_list, columns=["block_date","input_addr", "output_addr", "value"])
 
-    for tx_data in iter(txs):
-        tx_hash = tx_data['hash']
-        input_addr = tx_data['from']
-        output_addr = tx_data['to']
-        tx_value = tx_data['value']
-        return_dict[tx_hash] = [block_date, input_addr, output_addr, tx_value]
-    
-    print("###### Processing ETH block:",blockNumber, block_date)
+        for eth_date in tx_df["block_date"].groupby(tx_df["block_date"]).count().index.values:
+            daily_input_df = tx_df.loc[tx_df["block_date"]==eth_date].loc[:,["input_addr","value"]]
+            daily_input_df["in_sz"] = 1
+
+            daily_output_df = tx_df.loc[tx_df["block_date"]==eth_date].loc[:,["output_addr","value"]]
+            daily_output_df["out_sz"] = 1
+
+            daily_in_data = pd.concat([daily_input_df["in_sz"].groupby(daily_input_df["input_addr"]).sum(), daily_input_df["value"].groupby(daily_input_df["input_addr"]).sum()], axis=1)
+            daily_out_data = pd.concat([daily_output_df["out_sz"].groupby(daily_output_df["output_addr"]).sum(), daily_output_df["value"].groupby(daily_output_df["output_addr"]).sum()], axis=1)
+
+            daily_in_data.index.name="addr"
+            daily_out_data.index.name="addr"
+            daily_in_data["out_sz"] = 1
+            daily_in_data["in_sz"] = daily_in_data["in_sz"] + 1
+
+
+            daily_out_data["in_sz"] = 1
+            daily_out_data["out_sz"] = daily_out_data["out_sz"] + 1
+
+            IO_SZ = daily_out_data.add(daily_in_data, fill_value=0)
+
+            eth_tx_total = []
+            for tx in IO_SZ.values:
+                # Extract its input size and output size
+                vin = int(tx[0])
+                vout = int(tx[1])
+                if vin > 20:
+                    vin = 20
+                if vout > 20:
+                    vout = 20
+                IOName = f'{vin:02}' + f'{vout:02}'
+                tx_value = tx[2]
+                eth_tx_total.append([IOName, tx_value])
+
+
+            eth_tx_total = pd.DataFrame(eth_tx_total, columns=["IO_SZ", "value"])
+            YEAR = getYearFromDate(eth_date)
+            last_file_path = AMODATA_DIR + YEAR + "/" + str(eth_date) + ".csv"
+            if os.path.exists(last_file_path):
+                try:
+                    eth_tx_total.to_csv(last_file_path, mode='a', header=False)
+                except Exception as ex:
+                    template = "An exception of type {0} occurred. Arguments: \n{1!r}"
+                    message  = template.format(type(ex).__name__, ex.args)
+                    print( "\n" + message)
+            else:
+                try:
+                    eth_tx_total.to_csv(last_file_path, mode='a', header=False)
+                except Exception as ex:
+                    template = "An exception of type {0} occurred. Arguments: \n{1!r}"
+                    message  = template.format(type(ex).__name__, ex.args)
+                    print("\n" + message)
+            #genMat(eth_date, eth_tx_total)
+            record = "###### " + str(datetime.datetime.now()) + " last block number:"+ str(blockNumber + step_len + 1) + "\n"
+            saveRecord(record)    #print(eth_tx_total)
+        
+        handledBlockRecord(blockNumber) 
 
 def saveRecord(last_number):
-    f = open("history.txt", "w")
+    f = open("history.txt", "a")
     f.write(str(last_number))
     f.close()
 
-# If any errors are encountered, it will automatically restart.
-def genMat(date_unix, amo_data_total):
-    time_now = time.time()
-    Year = getYearFromDate(date_unix[0])
-
+def handleETHBlock(blockNumber):
+    print("blockNumber:", blockNumber)
+    if (start_block_number - blockNumber) < step_block:
+        web3 = web3_key1
+    elif ((start_block_number - blockNumber) >= step_block * 1) & ((start_block_number - blockNumber) < step_block * 2):
+        web3 = web3_key2
+    elif ((start_block_number - blockNumber) >= step_block * 2) & ((start_block_number - blockNumber) < step_block * 3):
+        web3 = web3_key3
+    elif ((start_block_number - blockNumber) >= step_block * 3) & ((start_block_number - blockNumber) < step_block * 4):
+        web3 = web3_key4
+    elif ((start_block_number - blockNumber) >= step_block * 4) & ((start_block_number - blockNumber) < step_block * 5):
+        web3 = web3_key5
+    elif ((start_block_number - blockNumber) >= step_block * 5) & ((start_block_number - blockNumber) < step_block * 6):
+        web3 = web3_key6
+    elif ((start_block_number - blockNumber) >= step_block * 6) & ((start_block_number - blockNumber) < step_block * 7):
+        web3 = web3_key7
+    elif ((start_block_number - blockNumber) >= step_block * 7) & ((start_block_number - blockNumber) < step_block * 8):
+        web3 = web3_key8
+    elif ((start_block_number - blockNumber) >= step_block * 8) & ((start_block_number - blockNumber) < step_block * 9):
+        web3 = web3_key9
+    else:
+        web3 = web3_key10
+        
+    block_data_dict = {}
     while True:
         try:
-                print("check file {}...".format(date_unix[0]+".json"))
-                if 'occ' + date_unix[0] + '.csv' in os.listdir(OCCMAT_DIR + YEAR + "/"):
-                    print(date_unix[0]+".csv already exists ...")
-                    # continue
-                else:
-                    # Get the daily block
-                    # amo_data_total = pd.read_csv(AMODATA_DIR + YEAR + "/" + date_unix[0] + ".csv", index_col=0, converters={"0":str})
-                    amo_data_total.to_csv(AMODATA_DIR + YEAR + "/" + date_unix[0] + ".csv")
-                    amo_data_total.columns = ['IOSize', 'tx_value']
-                    amo_data_total["tx_value_log"] = amo_data_total["tx_value"].map(lambda x: round(math.log(1 + x/(10**8)),5))
-                    amo_data_total.reset_index(drop=True)
-                    amo_data_total_dict = amo_data_total.groupby('IOSize').tx_value_log.apply(list).to_dict()
-                    IONameList = create_IONameList()
-                    print("amo_data_total:", amo_data_total)
-                    MATRIX_SIZE = len(IONameList)
-                    amoMat = [[0] * MATRIX_SIZE] * MATRIX_SIZE
-                    amoMat_df = pd.DataFrame(amoMat, columns = IONameList, index = IONameList)
+            for b_number in range(blockNumber, blockNumber + step_len, -1):
+                #print("b_number:",b_number)
+                block = web3.eth.getBlock(b_number, True)
+                block_date_unix = block.timestamp
+                block_date = datetime.datetime.utcfromtimestamp(block_date_unix).strftime('%Y-%m-%d')
+                txs = block.transactions
 
+                for tx_data in iter(txs):
+                    tx_hash = tx_data['hash']
+                    input_addr = tx_data['from']
+                    output_addr = tx_data['to']
+                    tx_value = tx_data['value']
+                    block_data_dict[tx_hash] = [block_date, input_addr, output_addr, tx_value]
 
-                    for IO_1 in IONameList:
-                        if IO_1 in amo_data_total_dict:
-                            amount_1 = pd.DataFrame(amo_data_total_dict[IO_1])
-                        else:
-                            amount_1 = pd.DataFrame([0])
-                        for IO_2 in IONameList:
-                            if IO_2 in amo_data_total_dict:
-                                amount_2 = pd.DataFrame(amo_data_total_dict[IO_2])
-                            else:
-                                amount_2 =  pd.DataFrame([0])
-                            amoMat_df.loc[IO_1, IO_2] = calculate_quantile(amount_1, amount_2)
-                        #print("amoMat_df:", amoMat_df)
-                    print("amoMat_df:", amoMat_df)
-
-                    # Calculate betti nummber
-                    # add parameter for perseus computing 
-                    amoMat_df.apply(str)
-                    param_1 = pd.DataFrame([["400"]], columns=["0101"])
-                    param_2 = pd.DataFrame([["1","1","101","1"]], columns=["0101", "0102", "0103", "0104"])
-                    param_amoMat_df = pd.concat([param_1,param_2, amoMat_df], axis=0, sort=False)
-                    perMat_path = PERMAT_DIR + YEAR + "/" + date_unix[0] + ".csv"
-                    param_amoMat_df.to_csv(perMat_path, index=False, sep='\t', header=False)
-
-                    # use perseus to compute betti number
-                    betti_path = "betti/" + YEAR + "/" + date_unix[0]
-                    betti_0_path = "betti/betti_0/" + YEAR + "/" + date_unix[0] + "_betti_0.csv"
-                    betti_1_path = "betti/betti_1/" + YEAR + "/" + date_unix[0] + "_betti_1.csv"
-                    perseus_command = "perseus/perseus distmat " + perMat_path + " " + betti_path
-                    if(os.system(perseus_command) == 0):
-                        betti_number = pd.read_csv(betti_path +"_betti.txt", sep='\s+', index_col=0, names=["betti_0", "betti_1"])
-                        init_betti_0 = pd.DataFrame([[0]]*101, columns=["betti_0"])
-                        init_betti_1 = pd.DataFrame([[0]]*101, columns=["betti_1"])
-                        betti_0 = (betti_number["betti_0"] + init_betti_0["betti_0"]).fillna(axis=0, method='ffill').fillna(0).astype(int)
-                        betti_1 = (betti_number["betti_1"] + init_betti_1["betti_1"]).fillna(axis=0, method='ffill').fillna(0).astype(int)
-                        betti_0.to_csv(betti_0_path)
-                        betti_1.to_csv(betti_1_path)
-                        print("Successfully calculated Betti number!")
-                    else:
-                        print("Failed to calculate Betti number!")
-
-                    # Calculate OccMat and AmoMat
-                    io_data_amo = amo_data_total['tx_value'].groupby(amo_data_total['IOSize']).sum()
-                    io_data_occ = amo_data_total.groupby(amo_data_total['IOSize']).count()
-                    io_data_occ = io_data_occ.iloc[:,1]
-                    occMat = torch.zeros(20,20)
-                    amoMat = torch.zeros(20,20)
-                    for i in range(1,21):
-                        for j in range(1,21):
-                            io_name = str(i).zfill(2) + str(j).zfill(2)
-                            if(io_name in io_data_amo.index):
-                                amoMat[i-1][j-1] = io_data_amo[io_name]
-                            if(io_name in io_data_occ.index):
-                                occMat[i-1][j-1] = io_data_occ[io_name]
-
-                    amoMat_np = amoMat.numpy()
-                    amoMat_df = pd.DataFrame(amoMat_np)
-                    #amoMat_df.to_csv(AMOMAT_DIR + 'amo2020' + str(day).zfill(3) + '.csv', float_format='%.0f', header=False, index=False)
-                    amoMat_df.to_csv(AMOMAT_DIR + YEAR + "/" + 'amo' + date_unix[0] + '.csv', float_format='%.0f', header=False, index=False)
-                    occMat_np = occMat.numpy()
-                    occMat_df = pd.DataFrame(occMat_np)
-                    #occMat_df.to_csv(OCCMAT_DIR + 'occ2020' + str(day).zfill(3) + '.csv', float_format='%.0f', header=False, index=False)
-                    occMat_df.to_csv(OCCMAT_DIR + YEAR + "/" + 'occ' + date_unix[0] + '.csv', float_format='%.0f', header=False, index=False)
+                if (b_number % 1000) == 0:
+                    print("###### Processing ETH block:",b_number, block_date)
+                    
+            return (block_data_dict, blockNumber)
                 
         except Exception as ex:
             template = "An exception of type {0} occurred. Arguments: \n{1!r}"
             message  = template.format(type(ex).__name__, ex.args)
-            print(date_unix[0] + "\n" + message)
+            print( "\n" + message)
             continue
-            
+
         break
         
-    # count the time
-    total_days = len(getBetweenDay(begin_date, end_date))
-    finished_days = len(os.listdir(BETTI_0_DIR + YEAR + "/")) - 1 
-    left_days = total_days - finished_days
-    finished_percentage = math.floor(finished_days / total_days * 100)
-    single_file_time = time.time()-time_now
-    left_time = single_file_time * left_days
-    print('\tcost: {:.4f}s/file; left time: {:.4f}s; {} {}%'.format(single_file_time, left_time,  "#"*finished_percentage+"."*(100-finished_percentage), finished_percentage))                
+        
+def handledBlockRecord(block_number):
+    f = open(blocks_record_path, "a")
+    f.write(str(datetime.datetime.now()) + "," + str(block_number) + "," + str(block_number + step_len + 1) + "\n")
+    f.close()
 
+#for start_block_number in range(start_block_number, end_block_number, step_len):
+while True:
+    try:
 
-for start_block_number in range(start_block_number, end_block_number, step_len):
-    if(os.system("rm -rf ./amoData/.ipynb_checkpoints") == 0):
-        last_day = min(os.listdir("./amoData/")).split(".")[0]
+        p = Pool(10)
+        for blockNumber in range(start_block_number, end_block_number, step_len):
+            p.apply_async(handleETHBlock, args=(blockNumber, ), callback=save_to_file)
+        p.close()
+        p.join()
+        print("end_block_number: ",end_block_number)
 
-    print("start_block_number:",start_block_number)
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments: \n{1!r}"
+        message  = template.format(type(ex).__name__, ex.args)
+        print("\n" + message)
+        continue
 
-    manager = multiprocessing.Manager()
-    return_dict = manager.dict()     
-    p = Pool(4)
-    for blockNumber in range(start_block_number, start_block_number + step_len, -1):
-        p.apply_async(handelETHBlock, args=(blockNumber, return_dict))
-    p.close()
-    p.join()
-
-    tx_list = return_dict.values()
-    #print(tx_list)
-    tx_df = pd.DataFrame(tx_list, columns=["block_date","input_addr", "output_addr", "value"])
-
-    for eth_date in tx_df["block_date"].groupby(tx_df["block_date"]).count().index.values:
-        daily_input_df = tx_df.loc[tx_df["block_date"]==eth_date].loc[:,["input_addr","value"]]
-        daily_input_df["in_sz"] = 1
-
-        daily_output_df = tx_df.loc[tx_df["block_date"]==eth_date].loc[:,["output_addr","value"]]
-        daily_output_df["out_sz"] = 1
-
-        daily_in_data = pd.concat([daily_input_df["in_sz"].groupby(daily_input_df["input_addr"]).sum(), daily_input_df["value"].groupby(daily_input_df["input_addr"]).sum()], axis=1)
-        daily_out_data = pd.concat([daily_output_df["out_sz"].groupby(daily_output_df["output_addr"]).sum(), daily_output_df["value"].groupby(daily_output_df["output_addr"]).sum()], axis=1)
-
-        daily_in_data.index.name="addr"
-        daily_out_data.index.name="addr"
-        daily_in_data["out_sz"] = 1
-        daily_in_data["in_sz"] = daily_in_data["in_sz"] + 1
-
-        daily_out_data["in_sz"] = 1
-        daily_out_data["out_sz"] = daily_out_data["out_sz"] + 1
-
-        IO_SZ = daily_out_data.add(daily_in_data, fill_value=0)
-
-        eth_tx_total = []
-        for tx in IO_SZ.values:
-            # Extract its input size and output size
-            vin = int(tx[0])
-            vout = int(tx[1])
-            if vin > 20:
-                vin = 20
-            if vout > 20:
-                vout = 20
-            IOName = f'{vin:02}' + f'{vout:02}'
-            tx_value = tx[2]
-            eth_tx_total.append([IOName, tx_value])
-        eth_tx_total = pd.DataFrame(eth_tx_total, columns=["IO_SZ", "value"])
-        if (last_day != 0) & (last_day == eth_date):
-            last_file_path = "./amoData/" + last_day + ".csv"
-            last_day_blocks = pd.read_csv(last_file_path, index_col = 0, converters={"0":str})
-            last_day_blocks.columns = ["IO_SZ", "value"]
-            eth_tx_total = pd.concat([last_day_blocks, eth_tx_total], axis=0).reset_index(drop=True)
-            
-	genMat(eth_date, eth_tx_total)
-
-    saveRecord(start_block_number-20000)    #print(eth_tx_total)
-
+    break
