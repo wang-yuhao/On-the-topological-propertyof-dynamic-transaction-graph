@@ -1,12 +1,16 @@
 # ChainLet:
 
-## 1. Generate OccMatrix.
+## 1. Data Pipeline
 
-1.1 Download Bitcoin input and output data from [here](https://github.com/cakcora/CoinWorks).
+![image](../Figures/data%20pipeline.png)
 
-1.2 Set the parameter:  **DATA_DIR_PATH** and **OCC_MATRIX_SIZE**.
+### 1.1. Example: Generate OccMatrix.
 
-1.3 Occ Matrix will be generated in the following directory:  **DATA_DIR_PATH + "processed_data/2016/"**.
+1.1.1 Download Bitcoin input and output data from [here](https://github.com/cakcora/CoinWorks).
+
+1.1.2 Set the parameter:  **DATA_DIR_PATH** and **OCC_MATRIX_SIZE**.
+
+1.1.3 Occ Matrix will be generated in the following directory:  **DATA_DIR_PATH + "processed_data/2016/"**.
    
 [Source File](./reimplement/python/gen_chainlet.py)
 
