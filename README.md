@@ -4,12 +4,10 @@
 
 ## 2. [ChainNet](./2-ChainNet/)
 
-## 3. [Impact of graph-based features on Bitcoin prices](./3-Impact-of-graph/)
+## 3. [Obtain actual blockchain data.](./3-Actual-blockchain-data/)
 
-## 4. [Obtain actual blockchain data.](./4-Actual-blockchain-data/)
+## 4. [Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI'21 Best Paper)](./4-Informer/)
 
-## 5. [Informer: Beyond Efficient Transformer for Long Sequence Time-Series Forecasting (AAAI'21 Best Paper)](./5-Informer/)
+## 5. [Currencies-Data](./5-Currencies-Data/)
 
-## 6. [Currencies-Data](./6-Currencies-Data/)
-
-## 7. [ETH-ChainNet](./7-ETH-ChainNet/)
+## 6. [ETH-ChainNet](./6-ETH-ChainNet/)
