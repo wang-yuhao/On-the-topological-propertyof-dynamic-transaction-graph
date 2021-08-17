@@ -1,6 +1,12 @@
 # Informer
 
-## 1. RMSE of sliding window based predictions of Bitcoin prices in different window and horizon values. 
+## 1. Informer model architecture.
+
+![image](../Figures/thesis_figures/informer_architecture.png)
+
+![image](../Figures/informer_v2.jpg)
+
+## 2. RMSE of sliding window based predictions of Bitcoin prices in different window and horizon values. 
 
 ### 2.1. YEAR = 2017
 
