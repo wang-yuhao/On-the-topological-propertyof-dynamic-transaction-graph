@@ -7,7 +7,7 @@
 
 ### 2. Cryptocurrency market
 
-![image](../Figures/cryptocurrenices_market)
+![image](../Figures/cryptocurrenices_market.png)
 
 ### 3. Covariance matrix of all cryptocurrency
 
