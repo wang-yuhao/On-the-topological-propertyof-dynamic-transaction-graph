@@ -1,4 +1,4 @@
-## Master thesis: On the topological property of dynamic transaction graph
+# Master thesis: On the topological property of dynamic transaction graph
 
 ## 1. [ChainLet](./1-Chainlet/)
 
